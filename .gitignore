@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+venv/
+env/
+.venv/
+
+# Dataset (troppo pesante)
+data/raw/
+data/processed/
+
+# Checkpoints (troppo pesanti)
+checkpoints/
+*.pth
+*.pt
+*.ckpt
+
+# Risultati immagini (pesanti)
+results/images/
+
+# Colab output
+dps_colab/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Altri
+*.log
+wandb/
+uv.lock
+.python-version
+pyproject.toml
