@@ -1,6 +1,6 @@
 # Computational Imaging — Joint Deblurring & Denoising
 
-**Group U | Academic Year 2024–2025**
+**Group U | Academic Year 2025–2026**
 
 > Comparison of three methodological families for joint Gaussian deblurring and denoising on FFHQ 256×256: **TV-ADMM** (variational), **NAF-Net** (end-to-end), and **DPS** (generative).
 
