@@ -371,8 +371,8 @@ with open('results/metrics.json', 'w') as f:
 print('metrics.json updated with DPS results!')
 EOF
 ```
-![Visual grid All Noise Level](result/plots/visual_grid_1.png)
 
+<img src="result/plots/visual_grid_1.png" width="700">
 
 ## 📈 Evaluation & Plots
 
