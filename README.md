@@ -372,7 +372,7 @@ print('metrics.json updated with DPS results!')
 EOF
 ```
 ![Visual grid All Noise Level](result/plots/visual_grid_1.png)
----
+
 
 ## 📈 Evaluation & Plots
 
