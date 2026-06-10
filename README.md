@@ -372,7 +372,7 @@ print('metrics.json updated with DPS results!')
 EOF
 ```
 
-<img src="result/plots/visual_grid_1.png" width="700">
+<img src="result/plots visual_grid_1.png" width="700">
 
 ## 📈 Evaluation & Plots
 
