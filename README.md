@@ -1,152 +1,169 @@
-# Computational Imaging — Joint Deblurring & Denoising
+Computational Imaging — Joint Image Deblurring and Denoising
 
-**Group U | Academic Year 2025–2026**
+Group U | Academic Year 2025–2026
 
-> Comparison of three methodological families for joint Gaussian deblurring and denoising on FFHQ 256×256: **TV-ADMM** (variational), **NAF-Net** (end-to-end), and **DPS** (generative).
+"Python" (https://img.shields.io/badge/Python-3.10+-blue)
+"PyTorch" (https://img.shields.io/badge/PyTorch-2.x-red)
+"License" (https://img.shields.io/badge/License-Academic-green)
 
----
+«Comparative study of three methodological families for joint Gaussian image deblurring and denoising on FFHQ 256×256:
 
-## 📋 Table of Contents
-
-- [Project Overview](#-project-overview)
-- [Results Summary](#-results-summary)
-- [Repository Structure](#-repository-structure)
-- [Setup](#-setup)
-- [Dataset](#-dataset)
-- [Method 1 — TV-ADMM](#-method-1--tv-admm)
-- [Method 2 — NAF-Net](#-method-2--naf-net)
-- [Method 3 — DPS (Google Colab)](#-method-3--dps-google-colab)
-- [Evaluation & Plots](#-evaluation--plots)
-- [References](#-references)
+TV-ADMM (Variational Optimization) • NAF-Net (Deep Learning Restoration) • DPS (Generative Diffusion Models)»
 
 ---
 
-## 🔬 Project Overview
+Project Overview
 
-### Degradation Model
+Image restoration is a fundamental inverse problem in computational imaging. This project investigates three fundamentally different approaches for recovering images degraded by blur and additive Gaussian noise.
 
-```
+The comparison includes:
+
+- TV-ADMM — a classical variational optimization method based on Total Variation regularization.
+- NAF-Net — a modern deep neural network trained end-to-end for image restoration.
+- DPS (Diffusion Posterior Sampling) — a generative diffusion-based approach exploiting powerful image priors.
+
+All methods are evaluated under identical experimental conditions using the same dataset, degradation operator, random seed, and evaluation protocol to ensure a fair and reproducible comparison.
+
+---
+
+Visual Comparison
+
+<p align="center">
+  <img src="results/plots/visual_grid_1.png" width="900">
+</p><p align="center">
+  <em>Example reconstructions produced by TV-ADMM, NAF-Net and DPS under different noise levels.</em>
+</p>---
+
+Table of Contents
+
+- "Project Overview" (#project-overview)
+- "Visual Comparison" (#visual-comparison)
+- "Results Summary" (#results-summary)
+- "Key Findings" (#key-findings)
+- "Repository Structure" (#repository-structure)
+- "Setup" (#setup)
+- "Dataset" (#dataset)
+- "Method 1 — TV-ADMM" (#method-1--tv-admm)
+- "Method 2 — NAF-Net" (#method-2--naf-net)
+- "Method 3 — DPS (Google Colab)" (#method-3--dps-google-colab)
+- "Evaluation & Plots" (#evaluation--plots)
+- "Quick Start" (#quick-start)
+- "Conclusion" (#conclusion)
+- "References" (#references)
+- "Reproducibility Notes" (#reproducibility-notes)
+
+---
+
+Results Summary
+
+Degradation Model
+
+[
 y = A(x) + n
-```
+]
 
-| Parameter | Value |
-|-----------|-------|
-| Forward operator A | Gaussian blur |
-| Blur σ | 2 |
-| Kernel size | 9×9 |
-| Noise type | Additive Gaussian |
-| Noise levels σ | **0.005, 0.01, 0.05, 0.1** |
+Parameter| Value
+Forward operator A| Gaussian blur
+Blur σ| 2
+Kernel size| 9×9
+Noise type| Additive Gaussian
+Noise levels| 0.005, 0.01, 0.05, 0.1
 
-> ⚠️ **All methods use identical pre-generated degraded images** — same random seed, same operator A — guaranteeing a fair comparison.
-
-### Methods
-
-| Method | Family | Description |
-|--------|--------|-------------|
-| **TV-ADMM** | Variational | Total Variation regularization via ADMM |
-| **NAF-Net** | End-to-end | Nonlinear Activation Free Network with noise conditioning |
-| **DPS** | Generative | Diffusion Posterior Sampling with pre-trained FFHQ model |
+All methods use exactly the same degraded images generated from a fixed random seed.
 
 ---
 
-## 📊 Results Summary
+PSNR (dB) ↑
 
-### PSNR (dB) ↑
-
-| Method | σ=0.005 | σ=0.01 | σ=0.05 | σ=0.1 |
-|--------|---------|--------|--------|-------|
-| **TV-ADMM** | 29.78 | 29.42 | 28.07 | 26.56 |
-| **NAF-Net** | 29.46 | 29.37 | 28.07 | 26.64 |
-| **DPS** | 25.56 | 24.63 | 24.63 | 24.80 |
-
-### SSIM ↑
-
-| Method | σ=0.005 | σ=0.01 | σ=0.05 | σ=0.1 |
-|--------|---------|--------|--------|-------|
-| **TV-ADMM** | 0.873 | 0.856 | 0.796 | 0.739 |
-| **NAF-Net** | 0.867 | 0.863 | 0.797 | 0.720 |
-| **DPS** | 0.790 | 0.810 | 0.737 | 0.690 |
-
-> TV-ADMM and NAF-Net evaluated on **100 test images**. DPS evaluated on **5 test images** per noise level (GPU required — run on Google Colab T4).
+Method| σ=0.005| σ=0.01| σ=0.05| σ=0.1
+TV-ADMM| 29.78| 29.42| 28.07| 26.56
+NAF-Net| 29.46| 29.37| 28.07| 26.64
+DPS| 25.56| 24.63| 24.63| 24.80
 
 ---
 
-## 📁 Repository Structure
+SSIM ↑
 
-```
+Method| σ=0.005| σ=0.01| σ=0.05| σ=0.1
+TV-ADMM| 0.873| 0.856| 0.796| 0.739
+NAF-Net| 0.867| 0.863| 0.797| 0.720
+DPS| 0.790| 0.810| 0.737| 0.690
+
+«TV-ADMM and NAF-Net were evaluated on 100 test images per noise level. DPS was evaluated on 5 test images per noise level due to its significantly higher computational cost.»
+
+---
+
+Key Findings
+
+- TV-ADMM achieved the strongest overall PSNR performance.
+- NAF-Net reached comparable results while relying on a single trained model.
+- DPS produced visually realistic reconstructions but lower distortion metrics.
+- Classical variational optimization remains highly competitive for Gaussian deblurring and denoising.
+- The benchmark highlights the trade-off between perceptual quality and reconstruction fidelity.
+
+---
+
+Repository Structure
+
 computational-imaging-deblur/
 │
 ├── data/
-│   ├── degradation.py          # Blur + noise pipeline (shared by all methods)
-│   ├── prepare_dataset.py      # Split FFHQ into train/val/test
-│   ├── generate_degraded.py    # Generate and save degraded images
+│   ├── degradation.py
+│   ├── prepare_dataset.py
+│   ├── generate_degraded.py
 │   └── README.md
 │
 ├── methods/
 │   ├── tv/
-│   │   ├── tv_admm.py          # TV-ADMM solver
-│   │   ├── operators.py        # Blur and finite difference operators
-│   │   └── README.md
 │   ├── nafnet/
-│   │   ├── model.py            # NAF-Net architecture
-│   │   ├── train.py            # Training loop
-│   │   ├── dataset.py          # PyTorch Dataset
-│   │   └── README.md
 │   └── dps/
-│       ├── sample.py           # DPS sampling (local version)
-│       ├── operators.py        # Differentiable blur operator
-│       └── README.md
 │
 ├── evaluation/
-│   ├── metrics.py              # PSNR, SSIM
-│   ├── evaluate_all.py         # Run evaluation on test set
-│   └── plot_results.py         # Generate comparison plots
+│   ├── metrics.py
+│   ├── evaluate_all.py
+│   └── plot_results.py
 │
 ├── experiments/
-│   ├── run_tv.py               # Run TV-ADMM on test set
-│   ├── run_nafnet.py           # Run NAF-Net on test set
-│   └── run_all.py              # Run all methods
+│   ├── run_tv.py
+│   ├── run_nafnet.py
+│   └── run_all.py
 │
 ├── notebooks/
-│   └── DPS.ipynb               # ← DPS Google Colab notebook
+│   └── DPS.ipynb
 │
 ├── results/
-│   ├── metrics.json            # All numerical results
-│   ├── plots/                  # PSNR/SSIM plots
-│   └── images/                 # DPS reconstructed images
+│   ├── metrics.json
+│   ├── plots/
+│   └── images/
 │
 ├── requirements.txt
 └── README.md
-```
 
 ---
 
-## ⚙️ Setup
+Setup
 
-### Prerequisites
+Clone the repository
 
-- Python 3.10+
-- Git
-
-### Installation
-
-```bash
-# Clone the repository
 git clone https://github.com/Giovanniprevitera01/computational-imaging-deblur.git
 cd computational-imaging-deblur
 
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate       # Windows: venv\Scripts\activate
+Create a virtual environment
 
-# Install dependencies
+python3 -m venv venv
+source venv/bin/activate
+
+Windows:
+
+venv\Scripts\activate
+
+Install dependencies
+
 pip install --upgrade pip
 pip install -r requirements.txt
-```
 
-### Create `__init__.py` files (required)
+Create package initialization files
 
-```bash
 touch data/__init__.py
 touch methods/__init__.py
 touch methods/tv/__init__.py
@@ -154,305 +171,208 @@ touch methods/nafnet/__init__.py
 touch methods/dps/__init__.py
 touch evaluation/__init__.py
 touch experiments/__init__.py
-```
 
 ---
 
-## 📦 Dataset
+Dataset
 
-### Download FFHQ 256×256
+Download FFHQ 256×256
 
-```bash
-# Option 1 — Kaggle CLI
+Kaggle CLI
+
 pip install kaggle
-# Place kaggle.json in ~/.kaggle/ then:
 kaggle datasets download denislukovnikov/ffhq256-images-only
 unzip ffhq256-images-only.zip -d data/raw/ffhq256/
 
-# Option 2 — Manual download
-# https://www.kaggle.com/datasets/denislukovnikov/ffhq256-images-only
-# Extract to data/raw/ffhq256/
-```
+Manual Download
 
-### Prepare the dataset
+Dataset:
 
-```bash
-# Step 1: Split into train / val / test (70% / 15% / 15%)
-python3 data/prepare_dataset.py
+https://www.kaggle.com/datasets/denislukovnikov/ffhq256-images-only
 
-# Expected output:
-# Found 2000 images — splitting with seed=42
-# Train: 1400 | Val: 300 | Test: 300
+Extract all files to:
 
-# Step 2: Generate degraded images for all noise levels
-python3 data/generate_degraded.py
-
-# Expected output:
-# train: 1400 images × 4 noise levels ... done
-# val:   300  images × 4 noise levels ... done
-# test:  300  images × 4 noise levels ... done
-```
-
-After this step, the structure will be:
-```
-data/processed/
-├── train/clean/        (1400 images)
-├── train/degraded/0.005/ ... 0.1/
-├── val/clean/          (300 images)
-├── val/degraded/...
-├── test/clean/         (300 images)
-└── test/degraded/...
-```
+data/raw/ffhq256/
 
 ---
 
-## 🔷 Method 1 — TV-ADMM
+Prepare Dataset
 
-No training required. Runs directly on the test set.
+python3 data/prepare_dataset.py
+python3 data/generate_degraded.py
 
-```bash
-# Run on all noise levels (100 images each)
+Expected split:
+
+Train: 1400 images
+Validation: 300 images
+Test: 300 images
+
+---
+
+Method 1 — TV-ADMM
+
+No training is required.
+
+Run evaluation:
+
 python3 experiments/run_tv.py --max_images 100
 
-# Run on a single noise level
+Single noise level:
+
 python3 experiments/run_tv.py --sigma 0.05 --max_images 100
 
-# Tune lambda on validation set first (optional)
-python3 experiments/run_tv.py --tune --max_images 100
-```
+Best λ values:
 
-**Expected output:**
-```
-TV-ADMM | σ=0.005 | λ=0.001 | images=100
-  PSNR=29.78 dB  SSIM=0.873
-TV-ADMM | σ=0.01  | λ=0.005 | images=100
-  PSNR=29.42 dB  SSIM=0.856
-...
-Saved to results/metrics.json
-```
-
-**Best λ per noise level (from validation set):**
-
-| σ | Best λ |
-|---|--------|
-| 0.005 | 0.001 |
-| 0.01  | 0.005 |
-| 0.05  | 0.020 |
-| 0.1   | 0.050 |
+Noise σ| λ
+0.005| 0.001
+0.01| 0.005
+0.05| 0.020
+0.1| 0.050
 
 ---
 
-## 🟢 Method 2 — NAF-Net
+Method 2 — NAF-Net
 
-### Train the model
+Training
 
-```bash
-# Full training (CPU: ~2 hours, GPU: ~20 min)
 python3 methods/nafnet/train.py --epochs 30 --batch_size 4
 
-# Monitor training:
-# Epoch  1 | Loss 0.0842 | Val PSNR 25.12 dB | SSIM 0.712
-# Epoch 10 | Loss 0.0412 | Val PSNR 27.55 dB | SSIM 0.823
-# ...
-# ✓ Best PSNR: 28.56 dB — checkpoint saved
+Checkpoint:
 
-# Checkpoint saved to:
-ls checkpoints/nafnet_best.pth
-```
+checkpoints/nafnet_best.pth
 
-### Evaluate
+Evaluation
 
-```bash
 python3 experiments/run_nafnet.py --max_images 100
 
-# Expected output:
-# NAF-Net | σ=0.005 | images=100
-#   PSNR=29.46 dB  SSIM=0.867
-# ...
-```
-
-> **Note:** The model uses noise-level conditioning — a single model handles all 4 noise levels by appending σ as a 4th input channel.
+The network uses noise-level conditioning, allowing a single model to process all degradation levels.
 
 ---
 
-## 🟣 Method 3 — DPS (Google Colab)
+Method 3 — DPS (Google Colab)
 
-DPS requires a GPU. We use **Google Colab T4 GPU** (free tier).
+DPS requires GPU acceleration and was executed using a Google Colab T4 GPU.
 
-> ⏱️ ~60 seconds per image on T4 GPU vs ~3 hours on CPU.
+Open Notebook
 
-### Step 1 — Open the Colab notebook
+Upload:
 
-Upload `notebooks/DPS.ipynb` to [colab.research.google.com](https://colab.research.google.com):
+notebooks/DPS.ipynb
 
-```
-File → Upload notebook → select notebooks/DPS.ipynb
-```
+to:
 
-**Set runtime to GPU:**
-```
-Runtime → Change runtime type → Hardware accelerator: T4 GPU
-```
+https://colab.research.google.com
 
-### Step 2 — Prepare images to upload
+Enable:
 
-On your local machine, identify the 5 test images to use:
+Runtime → Change runtime type → T4 GPU
 
-```bash
-ls data/processed/test/clean/ | head -5
-# 00001.png  00006.png  00013.png  00014.png  00023.png
-```
+---
 
-You will need to upload these images in 5 groups:
-1. `data/processed/test/clean/` → the 5 clean images
-2. `data/processed/test/degraded/0.005/` → same 5 images
-3. `data/processed/test/degraded/0.01/` → same 5 images
-4. `data/processed/test/degraded/0.05/` → same 5 images
-5. `data/processed/test/degraded/0.1/` → same 5 images
+DPS Parameters
 
-> ⚠️ Use **the same 5 images** across all noise levels and clean — this guarantees coherent visual comparisons.
+Parameter| Value
+Diffusion steps| 200
+ζ (zeta)| 1.0
+σy| Equal to noise level
+Post-processing| Gaussian blend
 
-### Step 3 — Run the notebook cells in order
+Additional blending:
 
-| Cell | What it does | Time |
-|------|-------------|------|
-| 1 | Install diffusers, scikit-image | ~1 min |
-| 2 | Upload images (5 groups) | ~2 min |
-| 3 | Download pre-trained DDPM model from HuggingFace | ~2 min |
-| 4 | Define DPS sampling function | instant |
-| 5 | **Run DPS on all 4 noise levels** | ~20 min |
-| 6 | Visualize results and download zip | ~1 min |
+Noise σ| α
+0.05| 0.10
+0.10| 0.15
 
-**DPS parameters used:**
+---
 
-| Parameter | Value | Notes |
-|-----------|-------|-------|
-| N steps | 200 | Best quality/speed trade-off |
-| ζ (zeta) | 1.0 | Uniform across all σ |
-| σ_y | = σ_noise | Likelihood strength |
-| Post-processing | Gaussian blend α=0.10-0.15 | Only for σ ≥ 0.05 |
+Integrate DPS Results
 
-### Step 4 — Download and integrate results
+After downloading the generated outputs from Colab:
 
-After the notebook completes, download `dps_results.zip` and `dps_metrics.json`.
+unzip dps_results.zip -d dps_colab/
 
-On your local machine:
+Copy images:
 
-```bash
-cd ~/path/to/computational-imaging-deblur
+cp -r dps_colab/results/* results/images/
 
-# Extract results
-unzip ~/Downloads/dps_results.zip -d dps_colab/
+Merge metrics:
 
-# Copy DPS reconstructed images
-mkdir -p results/images/dps_0.005 results/images/dps_0.01
-mkdir -p results/images/dps_0.05 results/images/dps_0.1
+python3 merge_dps_metrics.py
 
-cp -r dps_colab/results/dps_0.005/* results/images/dps_0.005/
-cp -r dps_colab/results/dps_0.01/*  results/images/dps_0.01/
-cp -r dps_colab/results/dps_0.05/*  results/images/dps_0.05/
-cp -r dps_colab/results/dps_0.1/*   results/images/dps_0.1/
+---
 
-# Merge DPS metrics into main metrics.json
-python3 - << 'EOF'
-import json
+Evaluation & Plots
 
-with open('results/metrics.json') as f:
-    local = json.load(f)
+Generate all figures:
 
-with open('dps_colab/results/dps_metrics.json') as f:
-    dps = json.load(f)
-
-local['dps'] = dps['dps']
-
-with open('results/metrics.json', 'w') as f:
-    json.dump(local, f, indent=2)
-
-print('metrics.json updated with DPS results!')
-EOF
-```
-
-<img src="result/plots visual_grid_1.png" width="700">
-
-## 📈 Evaluation & Plots
-
-### Generate comparison plots
-
-```bash
 python3 evaluation/plot_results.py
-```
 
-This generates:
-- `results/plots/psnr_vs_sigma.png` — PSNR curves for all methods
-- `results/plots/ssim_vs_sigma.png` — SSIM curves
-- `results/plots/combined_comparison.png` — Both metrics side by side
+Generated files:
 
-**Expected plots:**
-```
-Saved: results/plots/psnr_vs_sigma.png
-Saved: results/plots/ssim_vs_sigma.png
-Saved: results/plots/combined_comparison.png
-
-Method        σ=0.005    σ=0.01    σ=0.05     σ=0.1
-TV-ADMM        29.78     29.42     28.07      26.56
-NAF-Net        29.46     29.37     28.07      26.64
-DPS            25.56     24.63     24.63      24.80
-```
-
-### Print full results table
-
-```bash
-cat results/metrics.json | python3 -m json.tool
-```
+results/plots/psnr_vs_sigma.png
+results/plots/ssim_vs_sigma.png
+results/plots/combined_comparison.png
+results/plots/visual_grid_1.png
 
 ---
 
-## 🚀 Quick Start (all steps in order)
+Quick Start
 
-```bash
-# 1. Setup
 git clone https://github.com/Giovanniprevitera01/computational-imaging-deblur.git
+
 cd computational-imaging-deblur
-python3 -m venv venv && source venv/bin/activate
+
+python3 -m venv venv
+source venv/bin/activate
+
 pip install -r requirements.txt
 
-# 2. Dataset
-# Download FFHQ to data/raw/ffhq256/ then:
 python3 data/prepare_dataset.py
 python3 data/generate_degraded.py
 
-# 3. TV-ADMM (no training needed)
 python3 experiments/run_tv.py --max_images 100
 
-# 4. NAF-Net
 python3 methods/nafnet/train.py --epochs 30 --batch_size 4
 python3 experiments/run_nafnet.py --max_images 100
 
-# 5. DPS → run notebooks/DPS.ipynb on Google Colab T4 GPU
-#    then integrate results as described above
+# Run DPS notebook on Google Colab
 
-# 6. Generate plots
 python3 evaluation/plot_results.py
-```
 
 ---
 
-## 📚 References
+Conclusion
 
-1. Rudin, L., Osher, S., & Fatemi, E. (1992). *Nonlinear total variation based noise removal algorithms.* Physica D.
-2. Boyd, S. et al. (2011). *Distributed optimization via ADMM.* Foundations and Trends in ML.
-3. Chen, L. et al. (2022). *Simple Baselines for Image Restoration (NAF-Net).* ECCV 2022.
-4. Chung, H. et al. (2022). *Diffusion Posterior Sampling for General Noisy Inverse Problems.* ICLR 2023.
-5. Blau, Y. & Michaeli, T. (2018). *The Perception-Distortion Tradeoff.* CVPR 2018.
-6. Dhariwal, P. & Nichol, A. (2021). *Diffusion Models Beat GANs on Image Synthesis.* NeurIPS 2021.
-7. Karras, T. et al. (2019). *A Style-Based Generator Architecture for GANs (FFHQ).* CVPR 2019.
+This project compares three fundamentally different paradigms for image restoration under the same degradation model.
+
+The results indicate that:
+
+- TV-ADMM achieves the strongest quantitative performance.
+- NAF-Net provides highly competitive restoration quality with efficient inference.
+- DPS benefits from powerful generative priors and visually plausible reconstructions, although it trails behind in PSNR and SSIM.
+
+Overall, the benchmark highlights the strengths and limitations of variational, discriminative, and generative approaches to inverse imaging problems.
 
 ---
 
-## 📝 Notes on Reproducibility
+References
 
-- All experiments use **fixed random seed = 42**
-- All methods use **identical degraded images** generated by `data/generate_degraded.py`
-- NAF-Net checkpoint: `checkpoints/nafnet_best.pth` (not included — retrain with `train.py`)
-- DPS uses `google/ddpm-celebahq-256` from HuggingFace (downloaded automatically by Colab notebook)
-- DPS post-processing: Gaussian blend with α=0.10 (σ=0.05) and α=0.15 (σ=0.1) to reduce high-frequency artefacts — documented in `methods/dps/README.md`
+1. Rudin, Osher & Fatemi (1992) — Nonlinear Total Variation Based Noise Removal Algorithms.
+2. Boyd et al. (2011) — Distributed Optimization and Statistical Learning via ADMM.
+3. Chen et al. (2022) — Simple Baselines for Image Restoration (NAF-Net).
+4. Chung et al. (2023) — Diffusion Posterior Sampling for General Noisy Inverse Problems.
+5. Blau & Michaeli (2018) — The Perception–Distortion Tradeoff.
+6. Dhariwal & Nichol (2021) — Diffusion Models Beat GANs on Image Synthesis.
+7. Karras et al. (2019) — A Style-Based Generator Architecture for GANs (FFHQ).
+
+---
+
+Reproducibility Notes
+
+- Fixed random seed = 42
+- Identical degradation pipeline for all methods
+- Shared Gaussian blur operator and noise realizations
+- NAF-Net checkpoint not included in the repository
+- DPS relies on a pre-trained diffusion model downloaded automatically in Google Colab
+- All reported metrics were computed using the same evaluation protocol
+- Results can be reproduced by following the workflow described above
