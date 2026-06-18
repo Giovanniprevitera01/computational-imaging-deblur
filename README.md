@@ -419,7 +419,7 @@ DPS            25.56     24.63     24.63      24.80
 ```bash
 cat results/metrics.json | python3 -m json.tool
 ```
-
+![Visual Comparison](results/plots/visual_grid_1.png)
 ---
 
 ## 🚀 Quick Start (all steps in order)
