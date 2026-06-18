@@ -67,8 +67,7 @@ y = A(x) + n
 | **NAF-Net** | 0.867 | 0.863 | 0.797 | 0.720 |
 | **DPS** | 0.790 | 0.810 | 0.737 | 0.690 |
 
-
-
+> TV-ADMM and NAF-Net evaluated on **100 test images**. DPS evaluated on **5 test images** per noise level (GPU required — run on Google Colab T4).
 
 ---
 
@@ -80,12 +79,12 @@ computational-imaging-deblur/
 ├── data/
 │   ├── degradation.py          # Blur + noise pipeline (shared by all methods)
 │   ├── prepare_dataset.py      # Split FFHQ into train/val/test
-│   ├── generate_degraded.py    # Generate and save degraded images
-│   └── README.md
+│   └── generate_degraded.py    # Generate and save degraded images
 │
 ├── methods/
 │   ├── tv/
 │   │   ├── tv_admm.py          # TV-ADMM solver
+│   │   ├── admn.py             # ADMM core implementation
 │   │   ├── operators.py        # Blur and finite difference operators
 │   │   └── README.md
 │   ├── nafnet/
@@ -101,24 +100,41 @@ computational-imaging-deblur/
 ├── evaluation/
 │   ├── metrics.py              # PSNR, SSIM
 │   ├── evaluate_all.py         # Run evaluation on test set
-│   └── plot_results.py         # Generate comparison plots
+│   ├── plot_result.py          # Generate comparison plots
+│   └── visual_grid.py          # Generate visual comparison grids
 │
 ├── experiments/
 │   ├── run_tv.py               # Run TV-ADMM on test set
 │   ├── run_nafnet.py           # Run NAF-Net on test set
-│   └── run_all.py              # Run all methods
+│   └── run_dps.py              # Run DPS locally (CPU — slow)
 │
-├── notebooks/
-│   └── DPS.ipynb               # ← DPS Google Colab notebook
+├── dps_colab_new/
+│   └── results/
+│       ├── dps_0.005/          # DPS reconstructed images σ=0.005
+│       ├── dps_0.01/           # DPS reconstructed images σ=0.01
+│       ├── dps_0.05/           # DPS reconstructed images σ=0.05
+│       ├── dps_0.1/            # DPS reconstructed images σ=0.1
+│       ├── dps_all_sigmas.png  # Visual comparison all σ
+│       └── dps_metrics.json    # DPS numerical results
+│
+├── dps_upload/
+│   ├── clean/                  # 5 test images uploaded to Colab
+│   ├── degraded_0.005/         # Same 5 images degraded σ=0.005
+│   ├── degraded_0.01/          # Same 5 images degraded σ=0.01
+│   ├── degraded_0.05/          # Same 5 images degraded σ=0.05
+│   └── degraded_0.1/           # Same 5 images degraded σ=0.1
 │
 ├── results/
-│   ├── metrics.json            # All numerical results
-│   ├── plots/                  # PSNR/SSIM plots
-│   └── images/                 # DPS reconstructed images
+│   ├── metrics.json            # All numerical results (TV + NAF + DPS)
+│   └── plots/                  # PSNR/SSIM comparison plots
 │
+├── DPS.ipynb                   # ← DPS Google Colab notebook (root level)
+├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
+
+> **Note on DPS:** The `dps_upload/` folder contains the 5 test images used for DPS evaluation on Google Colab — the same images used by TV-ADMM and NAF-Net to guarantee coherent visual comparisons. Results are stored in `dps_colab_new/results/`.
 
 ---
 
@@ -399,9 +415,6 @@ TV-ADMM        29.78     29.42     28.07      26.56
 NAF-Net        29.46     29.37     28.07      26.64
 DPS            25.56     24.63     24.63      24.80
 ```
-
-![Visual Comparison](results/plots/visual_grid_1.png)
-
 
 ### Print full results table
 
