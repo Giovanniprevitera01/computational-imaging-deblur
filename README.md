@@ -134,8 +134,6 @@ computational-imaging-deblur/
 └── README.md
 ```
 
-> **Note on DPS:** The `dps_upload/` folder contains the 5 test images used for DPS evaluation on Google Colab — the same images used by TV-ADMM and NAF-Net to guarantee coherent visual comparisons. Results are stored in `dps_colab_new/results/`.
-
 ---
 
 ## ⚙️ Setup
