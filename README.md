@@ -67,7 +67,8 @@ y = A(x) + n
 | **NAF-Net** | 0.867 | 0.863 | 0.797 | 0.720 |
 | **DPS** | 0.790 | 0.810 | 0.737 | 0.690 |
 
-> TV-ADMM and NAF-Net evaluated on **100 test images**. DPS evaluated on **5 test images** per noise level (GPU required — run on Google Colab T4).
+
+
 
 ---
 
